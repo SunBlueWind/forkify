@@ -1,2 +1,3 @@
 import num from './test'
-console.log(`Import ${num} from test.js!`);
+const x = 56;
+console.log(`Import ${num} from test.js! Var x is ${x}.`);
