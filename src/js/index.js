@@ -1,4 +1,6 @@
 import Search from './models/Search';
+import * as searchView from './views/searchView';
+import { elements, displayLoader, clearLoader } from './views/base';
 
 /** GLOBAL STATE OBJECT
  * - current Search object
@@ -6,22 +8,28 @@ import Search from './models/Search';
  */
 const state = {};
 
-// GLOABL SELECTOR OBJECT
-const selectors = {
-    search: '.search'
-};
 
+/////////////////////
+// Controllers
+/////////////////////
 const controlSearch = async () => {
-    const query = 'pizza';  // TODO
+    // get user input
+    const query = searchView.getInput();
     // construct new Search object if query exists
     if (query) {
         state.search = new Search(query);
+
+        // update UI to prepare for the API call
+        searchView.clearInput();
+        searchView.clearResults();
+        displayLoader(elements.results);
 
         // perform search API call
         await state.search.fetchResult();
 
         // update UI
-        console.log(state.search.result);
+        clearLoader();
+        searchView.displayResults(state.search.getResult());
     }
 };
 
@@ -29,7 +37,7 @@ const controlSearch = async () => {
 /////////////////////
 // Event Listeners
 /////////////////////
-document.querySelector(selectors.search).addEventListener('submit', e => {
+elements.searchForm.addEventListener('submit', e => {
     e.preventDefault();
     controlSearch();
 });
