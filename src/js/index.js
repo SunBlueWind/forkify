@@ -1,6 +1,6 @@
 import Search from './models/Search';
 import * as searchView from './views/searchView';
-import { elements, displayLoader, clearLoader } from './views/base';
+import { elements, displayLoader, clearLoader, elementClassNames } from './views/base';
 
 /** GLOBAL STATE OBJECT
  * - current Search object
@@ -37,7 +37,19 @@ const controlSearch = async () => {
 /////////////////////
 // Event Listeners
 /////////////////////
+
+// search form submit listener
 elements.searchForm.addEventListener('submit', e => {
     e.preventDefault();
     controlSearch();
+});
+
+// pagination button click listener
+elements.resultsPageBtn.addEventListener('click', e => {
+    const button = e.target.closest(`.${elementClassNames.paginationBtn}`);
+    if (button) {
+        const gotoPage = parseInt(button.dataset.goto, 10);
+        searchView.clearResults();
+        searchView.displayResults(state.search.getResult(), gotoPage);
+    }
 });
