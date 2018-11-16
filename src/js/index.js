@@ -1,6 +1,8 @@
 import Search from './models/Search';
+import Recipe from './models/Recipe';
 import * as searchView from './views/searchView';
 import { elements, displayLoader, clearLoader, elementClassNames } from './views/base';
+
 
 /** GLOBAL STATE OBJECT
  * - current Search object
@@ -12,6 +14,8 @@ const state = {};
 /////////////////////
 // Controllers
 /////////////////////
+
+// search input controller
 const controlSearch = async () => {
     // get user input
     const query = searchView.getInput();
@@ -30,6 +34,22 @@ const controlSearch = async () => {
         // update UI
         clearLoader();
         searchView.displayResults(state.search.getResult());
+    }
+};
+
+// url hash ID controller
+const controlUrlHash = async () => {
+    // get the recipe ID from url
+    const recipeID = window.location.hash.replace('#', '');
+    if (recipeID) {
+        state.recipe = new Recipe(recipeID);
+
+        // fetch specific recipe from API call
+        await state.recipe.fetchRecipe();
+        console.log(state.recipe);
+
+        state.recipe.transformIngredients();
+        console.log(state.recipe);
     }
 };
 
@@ -53,3 +73,6 @@ elements.resultsPageBtn.addEventListener('click', e => {
         searchView.displayResults(state.search.getResult(), gotoPage);
     }
 });
+
+// url hash change listener
+['hashchange', 'load'].forEach(e => window.addEventListener(e, controlUrlHash));
