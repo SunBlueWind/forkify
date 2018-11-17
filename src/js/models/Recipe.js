@@ -7,7 +7,9 @@ const transformUnit = {
     'pound': ['pounds'],
     'cup': ['cups'],
     'jar': ['jars'],
-    'package': ['packages']
+    'package': ['packages'],
+    'g': ['grams', 'gram'],
+    'kg': ['kilograms', 'kilogram']
 };
 
 export default class Recipe {
@@ -28,6 +30,7 @@ export default class Recipe {
         this.image_url = recipe.image_url;
         this.publisher = recipe.publisher;
         this.ingredients = recipe.ingredients;
+        this.source_url = recipe.source_url;
         // assume each recipe is for 4 servings
         this.servings = 4;
         // assume each 3 ingredients require 15 minutes cooking time

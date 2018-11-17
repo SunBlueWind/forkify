@@ -1,6 +1,7 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import * as searchView from './views/searchView';
+import * as recipeView from './views/recipeView';
 import { elements, displayLoader, clearLoader, elementClassNames } from './views/base';
 
 
@@ -26,6 +27,7 @@ const controlSearch = async () => {
         // update UI to prepare for the API call
         searchView.clearInput();
         searchView.clearResults();
+        recipeView.clearRecipe();
         displayLoader(elements.results);
 
         // perform search API call
@@ -44,12 +46,18 @@ const controlUrlHash = async () => {
     if (recipeID) {
         state.recipe = new Recipe(recipeID);
 
+        // update UI to prepare for the API call
+        recipeView.highlightSelectedRecipe(recipeID);
+        recipeView.clearRecipe();
+        displayLoader(elements.recipe);
+
         // fetch specific recipe from API call
         await state.recipe.fetchRecipe();
-        console.log(state.recipe);
-
         state.recipe.transformIngredients();
-        console.log(state.recipe);
+
+        // update UI
+        clearLoader();
+        recipeView.displayRecipe(state.recipe);
     }
 };
 

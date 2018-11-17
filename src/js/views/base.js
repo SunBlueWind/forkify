@@ -4,13 +4,15 @@ export const elements = {
     searchInput: document.querySelector('.search__field'),
     resultList: document.querySelector('.results__list'),
     results: document.querySelector('.results'),
-    resultsPageBtn: document.querySelector('.results__pages')
+    resultsPageBtn: document.querySelector('.results__pages'),
+    recipe: document.querySelector('.recipe')
 };
 
 // element class name
 export const elementClassNames = {
     loader: 'loader',
-    paginationBtn: 'btn-inline'
+    paginationBtn: 'btn-inline',
+    resultsLink: 'results__link'
 };
 
 // spinner loader
