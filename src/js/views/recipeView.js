@@ -41,10 +41,12 @@ const generateIngredientMarkup = ingredient => `
 // exported functions
 ////////////////////////
 
+// clear the currently displayed recipe
 export const clearRecipe = () => {
     elements.recipe.innerHTML = '';
 };
 
+// display the currently selected recipe
 export const displayRecipe = recipe => {
     elements.recipe.insertAdjacentHTML('afterbegin', `
         <figure class="recipe__fig">
@@ -69,12 +71,12 @@ export const displayRecipe = recipe => {
                 <span class="recipe__info-text"> servings</span>
 
                 <div class="recipe__info-buttons">
-                    <button class="btn-tiny">
+                    <button class="btn-tiny btn-decrease">
                         <svg>
                             <use href="img/icons.svg#icon-circle-with-minus"></use>
                         </svg>
                     </button>
-                    <button class="btn-tiny">
+                    <button class="btn-tiny btn-increase">
                         <svg>
                             <use href="img/icons.svg#icon-circle-with-plus"></use>
                         </svg>
@@ -91,7 +93,7 @@ export const displayRecipe = recipe => {
 
         <div class="recipe__ingredients">
             <ul class="recipe__ingredient-list">
-                ${recipe.ingredients.map(ing => generateIngredientMarkup(ing))}
+                ${recipe.ingredients.map(ing => generateIngredientMarkup(ing)).join('')}
             </ul>
 
             <button class="btn-small recipe__btn">
@@ -118,6 +120,8 @@ export const displayRecipe = recipe => {
     `);
 };
 
+// hightlight the currently selected recipe
+// and unhighlight all the other recipes
 export const highlightSelectedRecipe = recipeID => {
     // unhiglight all the other links
     document.querySelectorAll('.results__link').forEach(el => {
@@ -126,9 +130,19 @@ export const highlightSelectedRecipe = recipeID => {
 
     // hightlight the selected link
     const selectedLink = document.querySelector(`a[href="#${recipeID}"]`);
-    console.log(selectedLink);
     if (selectedLink) {
         selectedLink.classList.add('results__link--active');
-        console.log(selectedLink.classList);
     }
 };
+
+// adjust the number of servings in the currently selected recipe
+export const adjustServings = recipe => {
+    if (recipe.servings > 0) {
+        // update the servings display
+        document.querySelector('.recipe__info-data--people').textContent = recipe.servings;
+        // update each ingredient count
+        Array.from(document.querySelectorAll('.recipe__count')).forEach((el, idx) => {
+            el.textContent = fractionalizeFloat(recipe.ingredients[idx].count);
+        });
+    }
+}

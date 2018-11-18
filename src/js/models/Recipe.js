@@ -93,7 +93,7 @@ export default class Recipe {
             }
             newIngredient.unit = ingArr[unitPos];
             newIngredient.description = ingArr.slice(unitPos + 1).join(' ');
-        } else if (parseInt(ingArr[0], 10)) {
+        } else if (!isNaN(ingArr[0])) {
             // no unit, but first entry is a number
             newIngredient.count = eval(ingArr[0]);
             newIngredient.description = ingArr.slice(1).join(' ');
@@ -124,5 +124,18 @@ export default class Recipe {
 
             return ingredient;
         });
+    }
+
+    updateServings(type) {
+        // calculate new servings
+        const newServings = type === 'dec' ? this.servings - 1 : this.servings + 1;
+
+        if (newServings > 0) {
+            // only update if the new servings is greater than 0
+            this.ingredients.forEach(ing => {
+                ing.count *= (newServings / this.servings);
+            });
+            this.servings = newServings;
+        }
     }
 }

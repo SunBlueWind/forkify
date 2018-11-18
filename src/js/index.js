@@ -7,7 +7,7 @@ import { elements, displayLoader, clearLoader, elementClassNames } from './views
 
 /** GLOBAL STATE OBJECT
  * - current Search object
- * 
+ * - current Recipe object
  */
 const state = {};
 
@@ -84,3 +84,14 @@ elements.resultsPageBtn.addEventListener('click', e => {
 
 // url hash change listener
 ['hashchange', 'load'].forEach(e => window.addEventListener(e, controlUrlHash));
+
+// adjust servings listener
+elements.recipe.addEventListener('click', e => {
+    if (e.target.matches('.btn-decrease, .btn-decrease *')) {
+        state.recipe.updateServings('dec');
+        recipeView.adjustServings(state.recipe);
+    } else if (e.target.matches('.btn-increase, .btn-increase *')) {
+        state.recipe.updateServings('inc');
+        recipeView.adjustServings(state.recipe);
+    }
+});
