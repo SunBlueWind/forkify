@@ -96,7 +96,7 @@ export const displayRecipe = recipe => {
                 ${recipe.ingredients.map(ing => generateIngredientMarkup(ing)).join('')}
             </ul>
 
-            <button class="btn-small recipe__btn">
+            <button class="btn-small recipe__btn shopping-add-btn">
                 <svg class="search__icon">
                     <use href="img/icons.svg#icon-shopping-cart"></use>
                 </svg>

@@ -1,16 +1,19 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
+import List from './models/List';
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
+import * as listView from './views/listView';
 import { elements, displayLoader, clearLoader, elementClassNames } from './views/base';
 
 
 /** GLOBAL STATE OBJECT
  * - current Search object
  * - current Recipe object
+ * - current Shopping List object
  */
 const state = {};
-
+window.state = state; // debug
 
 /////////////////////
 // Controllers
@@ -61,6 +64,26 @@ const controlUrlHash = async () => {
     }
 };
 
+// add current recipe ingredients to shopping list
+const addToShoppingList = () => {
+    if (state.list === undefined) {
+        state.list = new List();
+    }
+    if (state.recipe && state.recipe.ingredients) {
+        const ingredients = state.recipe.ingredients;
+        ingredients.forEach(ing => {
+            // add to global state
+            const item = state.list.addItem(
+                ing.count,
+                ing.unit,
+                ing.description
+            );
+            // update UI
+            listView.renderItem(item);
+        });
+    }
+}
+
 
 /////////////////////
 // Event Listeners
@@ -85,13 +108,36 @@ elements.resultsPageBtn.addEventListener('click', e => {
 // url hash change listener
 ['hashchange', 'load'].forEach(e => window.addEventListener(e, controlUrlHash));
 
-// adjust servings listener
+// recipe view listener
 elements.recipe.addEventListener('click', e => {
     if (e.target.matches('.btn-decrease, .btn-decrease *')) {
+        // increase serving
         state.recipe.updateServings('dec');
         recipeView.adjustServings(state.recipe);
     } else if (e.target.matches('.btn-increase, .btn-increase *')) {
+        // decrease serving
         state.recipe.updateServings('inc');
         recipeView.adjustServings(state.recipe);
+    } else if (e.target.matches('.shopping-add-btn, .shopping-add-btn *')) {
+        // add to shopping list
+        addToShoppingList();
+    }
+});
+
+// shopping list listener
+elements.shoppingList.addEventListener('click', e => {
+    const id = e.target.closest('.shopping__item').dataset.itemid;
+    if (e.target.matches('.shopping-adjust')) {
+        // adjust servings in shopping list
+        const newCount = parseFloat(e.target.value);
+        if (newCount >= 0) {
+            state.list.updateCount(id, newCount);
+        }
+    } else if (e.target.matches('.shopping__delete, .shopping__delete *')) {
+        // delete an ingredient from shopping list
+        // remove from state
+        state.list.removeItem(id);
+        // adjust UI
+        listView.removeItem(id);
     }
 });

@@ -5,7 +5,8 @@ export const elements = {
     resultList: document.querySelector('.results__list'),
     results: document.querySelector('.results'),
     resultsPageBtn: document.querySelector('.results__pages'),
-    recipe: document.querySelector('.recipe')
+    recipe: document.querySelector('.recipe'),
+    shoppingList: document.querySelector('.shopping__list')
 };
 
 // element class name
